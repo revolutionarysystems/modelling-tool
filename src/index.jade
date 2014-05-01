@@ -1,0 +1,123 @@
+doctype html
+html(ng-app="modeller")
+	head
+		meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+		link(rel='stylesheet', type='text/css', href='css/libraries.css')
+		script(type='text/javascript', src='js/libraries.js')
+		script(src='js/app.js')
+		title Modeller
+	body(style='', ng-controller="ModellerCtrl", ng-init="init()")
+		div.fluid-container.main
+			div.row
+				div
+					div.btn-group
+						button.btn.btn-default(data-toggle="modal", data-target="#exportModal", ng-click="form.export = export()") Export
+						button.btn.btn-default(data-toggle="modal", data-target="#importModal") Import
+						button.btn.btn-default(data-toggle="modal", data-target="#exportModal", ng-click="form.export = exportAsStencil()") Export As Stencil
+						button.btn.btn-default(ng-click="clearCanvas()") Clear
+			div.row
+				div.col-md-2
+					h3 Stencils
+					div#stencils
+						div.stencil(ng-repeat="stencil in stencils")
+							details(open)
+								summary {{stencil.name}}
+								div(ng-repeat="template in stencil.templates")
+									span {{template.name}}
+									span.glyphicon.glyphicon-plus(ng-click="addTemplateToCanvas(template)")
+					button.btn.btn-default(data-toggle="modal", data-target="#loadStencilModal") Load Stencil
+				div.col-md-7
+					h3 Canvas
+					div
+						div.btn-group
+							button.btn.btn-default(ng-click="linkSelectedObject()") Link
+							button.btn.btn-default(ng-click="cloneSelectedObject()") Clone
+							button.btn.btn-default(data-toggle="modal", data-target="#exportModal", ng-click="form.export = exportSelectedObject()") Export
+							button.btn.btn-default(ng-click="removeSelectedObject()") Delete
+					div#canvas
+				div.col-md-3
+					h3 Properties
+					h5 Name
+					div
+						pre {{selectedObject.name}}
+						button.btn.btn-default(data-toggle="modal", data-target="#renameObjectModal", ng-click="form.objectName = selectedObject.name") Rename
+					h5 Shape
+					div
+						pre {{selectedObject.shape.attributes.attrs | json}}
+						button.btn.btn-default(data-toggle="modal",data-target="#editShapeModal" ng-click="setFormJSON('shape', selectedObject.shape.attributes.attrs)") Edit
+					h5 Model
+					div#model
+						pre {{selectedObject.model | json}}
+						button.btn.btn-default(data-toggle="modal",data-target="#editModelModal" ng-click="setFormJSON('model', selectedObject.model)") Edit
+		div#modals
+			div#editModelModal.modal.fade(role="dialog", tabindex="-1")
+				.modal-dialog
+					form
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+								h4.modal-title Edit Model
+							.modal-body
+								textarea(ng-model="form.model")
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button.btn.btn-primary(type='button', data-dismiss='modal', ng-click="updateModel()") Save
+			div#editShapeModal.modal.fade(role="dialog", tabindex="-1")
+				.modal-dialog
+					form
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+								h4.modal-title Edit Shape
+							.modal-body
+								textarea(ng-model="form.shape")
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button.btn.btn-primary(type='button', data-dismiss='modal', ng-click="updateShape()") Save
+			div#exportModal.modal.fade(role="dialog", tabindex="-1")
+				.modal-dialog
+					form
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+								h4.modal-title Export
+							.modal-body
+								pre {{form.export}}
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+			div#importModal.modal.fade(role="dialog", tabindex="-1")
+				.modal-dialog
+					form
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+								h4.modal-title Import
+							.modal-body
+								textarea(ng-model="form.import")
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button.btn.btn-primary(type='button', data-dismiss='modal', ng-click="import()") Import
+			div#loadStencilModal.modal.fade(role="dialog", tabindex="-1")
+				.modal-dialog
+					form
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+								h4.modal-title Load Stencil
+							.modal-body
+								textarea(ng-model="form.stencil")
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button.btn.btn-primary(type='button', data-dismiss='modal', ng-click="loadStencil()") Load
+			div#renameObjectModal.modal.fade(role="dialog", tabindex="-1")
+				.modal-dialog
+					form
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+								h4.modal-title Rename Object
+							.modal-body
+								input(type="text", ng-model="form.objectName")
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button.btn.btn-primary(type='button', data-dismiss='modal', ng-click="renameObject()") Save

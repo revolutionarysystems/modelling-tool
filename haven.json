@@ -1,0 +1,21 @@
+{
+	"name": "modeller",
+	"version": "0.1.0",
+	"dependencies": [
+		{
+			"name": "jointjs",
+			"version": "0.8.1"
+		},{
+			"name": "bootstrap",
+			"version": "3.1.1",
+			"includes":[
+				"bootstrap.css",
+				"bootstrap.js"
+			]
+		},{
+			"name": "angularjs",
+			"version": "1.2.13",
+			"includes":["angular.js"]
+		}
+	]
+}
